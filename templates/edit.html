@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Edit Book - My Library</title>
+
+    <!-- Bootstrap 5 CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(
+          135deg,
+          #0f0f1e 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        color: #f1f1f1;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(
+          circle,
+          rgba(13, 110, 253, 0.1) 0%,
+          transparent 70%
+        );
+        top: -100px;
+        right: -100px;
+        pointer-events: none;
+        animation: pulse 8s ease-in-out infinite;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(102, 126, 234, 0.08) 0%,
+          transparent 70%
+        );
+        bottom: -100px;
+        left: -100px;
+        pointer-events: none;
+        animation: pulse 10s ease-in-out infinite reverse;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 0.8;
+        }
+      }
+
+      .navbar {
+        background: rgba(13, 110, 253, 0.9) !important;
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(13, 110, 253, 0.2);
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        letter-spacing: -0.5px;
+        transition: transform 0.3s ease;
+      }
+
+      .navbar-brand:hover {
+        transform: scale(1.05);
+      }
+
+      .btn-light {
+        background: rgba(255, 255, 255, 0.95);
+        color: #0d6efd;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+      }
+
+      .btn-light:hover {
+        background: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+      }
+
+      .edit-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .edit-card {
+        background: rgba(28, 28, 28, 0.6);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        padding: 48px;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        transition: all 0.4s ease;
+        animation: slideUp 0.6s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .edit-card:hover {
+        box-shadow: 0 25px 70px rgba(13, 110, 253, 0.3);
+        border-color: rgba(13, 110, 253, 0.2);
+      }
+
+      .edit-card h2 {
+        background: linear-gradient(135deg, #0d6efd 0%, #667eea 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        letter-spacing: -1px;
+        margin-bottom: 8px;
+      }
+
+      .edit-card .subtitle {
+        color: #b0b0b0;
+        margin-bottom: 32px;
+        font-size: 0.95rem;
+      }
+
+      .form-label {
+        color: #e0e0e0;
+        font-weight: 600;
+        margin-bottom: 12px;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+      }
+
+      .form-control,
+      .form-select {
+        background: rgba(30, 30, 30, 0.5);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #f1f1f1;
+        padding: 14px 18px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        background: rgba(40, 40, 40, 0.7);
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+        color: #f1f1f1;
+      }
+
+      .form-control::placeholder {
+        color: #666;
+      }
+
+      .form-control:disabled,
+      .form-select:disabled {
+        background: rgba(20, 20, 20, 0.5);
+        color: #888;
+        cursor: not-allowed;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #667eea 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 32px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(13, 110, 253, 0.3);
+        width: 100%;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(13, 110, 253, 0.5);
+      }
+
+      .btn-secondary {
+        background: rgba(60, 60, 60, 0.5);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 14px 32px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        color: #e0e0e0;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(70, 70, 70, 0.7);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        color: #fff;
+      }
+
+      .button-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 32px;
+      }
+
+      .rating-helper {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 0.85rem;
+        color: #888;
+      }
+
+      .rating-value {
+        color: #0d6efd;
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      footer {
+        background: linear-gradient(135deg, #0d6efd 0%, #667eea 100%);
+        color: #fff;
+        padding: 16px 0;
+        text-align: center;
+        box-shadow: 0 -8px 32px rgba(13, 110, 253, 0.3);
+        position: relative;
+        z-index: 10;
+      }
+
+      footer p {
+        margin: 0;
+        font-weight: 500;
+      }
+
+      @media (max-width: 576px) {
+        .edit-card {
+          padding: 32px 24px;
+        }
+
+        .button-group {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Range input styling */
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        background: transparent;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      input[type="range"]::-webkit-slider-track {
+        background: rgba(60, 60, 60, 0.5);
+        height: 8px;
+        border-radius: 5px;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        background: linear-gradient(135deg, #0d6efd 0%, #667eea 100%);
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        box-shadow: 0 2px 10px rgba(13, 110, 253, 0.5);
+        transition: all 0.3s ease;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.7);
+      }
+
+      input[type="range"]::-moz-range-track {
+        background: rgba(60, 60, 60, 0.5);
+        height: 8px;
+        border-radius: 5px;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        background: linear-gradient(135deg, #0d6efd 0%, #667eea 100%);
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        border: none;
+        box-shadow: 0 2px 10px rgba(13, 110, 253, 0.5);
+        transition: all 0.3s ease;
+      }
+
+      input[type="range"]::-moz-range-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.7);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="{{url_for('home')}}">
+          📚 My Library
+        </a>
+        <a href="{{ url_for('home') }}" class="btn btn-light">
+          ← Back to Library
+        </a>
+      </div>
+    </nav>
+
+    <!-- Edit Form Container -->
+    <div class="edit-container">
+      <div class="edit-card">
+        <h2 class="text-center">✏️ Edit Book</h2>
+        <p class="subtitle text-center">Update the rating for this book</p>
+
+        <form method="POST" action="{{ url_for('edit', id=book.id) }}">
+          <!-- Book Title (Disabled) -->
+          <div class="mb-4">
+            <label for="title" class="form-label">Book Title</label>
+            <input
+              type="text"
+              class="form-control"
+              id="title"
+              name="title"
+              value="{{ book.title }}"
+            />
+          </div>
+
+          <!-- Book Author (Disabled) -->
+          <div class="mb-4">
+            <label for="author" class="form-label">Author</label>
+            <input
+              type="text"
+              class="form-control"
+              id="author"
+              name="author"
+              value="{{ book.author }}"
+            />
+          </div>
+
+          <!-- Book Rating (Editable) -->
+          <div class="mb-4">
+            <label for="rating" class="form-label">
+              Rating
+              <span class="rating-value" id="ratingValue"
+                >{{ book.rating }}</span
+              >/10
+            </label>
+            <input
+              type="range"
+              class="form-control"
+              id="rating"
+              name="rating"
+              min="0"
+              max="10"
+              step="0.5"
+              value="{{ book.rating }}"
+              oninput="document.getElementById('ratingValue').textContent = this.value"
+              required
+            />
+            <div class="rating-helper">
+              <span>Poor</span>
+              <span>Average</span>
+              <span>Excellent</span>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button type="submit" class="btn btn-primary">
+              💾 Save Changes
+            </button>
+            <a href="{{ url_for('home') }}" class="btn btn-secondary">
+              ✖ Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; {{ current_year }} My Library | Made with ❤️ by BLAKE</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
