@@ -205,7 +205,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📸 Screenshots
 
-_Add screenshots of your application here to showcase the UI_
+<img width="1705" height="732" alt="Screenshot 2025-10-17 135352" src="https://github.com/user-attachments/assets/1ac89f49-6c04-4096-bc2c-e2604a7dfa75" />
 
 ---
 
@@ -241,3 +241,4 @@ pip install -r requirements.txt
 ---
 
 ⭐ If you find this project helpful, please consider giving it a star on GitHub!
+
